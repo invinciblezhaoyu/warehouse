@@ -16,7 +16,7 @@ Vue.use(ElementUI);
 
 router.beforeEach((to, from, next) => {
   if (to.meta.requireAuth) {
-      if (sessionStorage.user) { 
+      if (sessionStorage.userName) { 
           next();
       }
       else {

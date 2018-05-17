@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { SSL_OP_MICROSOFT_BIG_SSLV3_BUFFER } from 'constants';
 export default {
   state:{
     user: {},
@@ -11,6 +12,8 @@ export default {
   mutations:{
     alterUser(state,data) {
       state.user = data;
+      sessionStorage.userName = data.ManagerName;
+      sessionStorage.ManagerID = data.ManagerID;
     },
     alterUserList(state,data) {
       state.userList = data;

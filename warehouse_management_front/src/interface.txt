@@ -1,0 +1,86 @@
+{
+    methods:POST,
+    'url':'http://baseurl:8080/#/login',
+    params:{
+        ManagerName:admin,
+        password: admin
+    },
+    return:{
+        ManagerName:"admin",
+        id:1,
+        password:"admin"
+    }
+},
+{
+    methods:GET,
+    url:'http://baseurl:8080/#/storage/allStorage',
+    return:[
+        {
+            StoManID:"2",
+            StorageAddre:"123",
+            StorageID:"1804181340",
+            StorageName:"仓库18-0418-1340",
+            createTime: "2018-04-18 13:40:10"
+        },...]
+},
+{
+    methods:POST,
+    url:'http://baseurl:8080/#/storage/addStorage',
+    params:{
+        StoManID:"2",
+        StorageAddre:"123",
+        StorageID:"1804181340",
+        StorageName:"仓库18-0418-1340",
+        createTime: "2018-04-18 13:40:10"
+    },
+    return:{
+        affectedRows:1,
+        changedRows:1,
+        fieldCount:0,
+        insertId:0,
+        message:"(Rows matched: 1  Changed: 1  Warnings: 0",
+        protocol41:true,
+        serverStatus:2,
+        warningCount:0
+    }
+},
+{
+    请求方式：PUT，
+    url：http://baseurl:8080/#/storage/updateStorage,
+    params：{
+        StoManID:"2",
+        StorageAddre:"1234",
+        StorageID:"1804181340",
+        StorageName:"仓库18-0418-1340",
+        createTime: "2018-04-18 13:40:10"
+    },
+    return:{
+        affectedRows:1,
+        changedRows:1,
+        fieldCount:0,
+        insertId:0,
+        message:"(Rows matched: 1  Changed: 1  Warnings: 0",
+        protocol41:true,
+        serverStatus:34,
+        warningCount:0
+    }
+},
+{
+    请求方式：DELETE,
+    url：http://baseurl:8080/#/storage/deleteStorage,
+    params：{
+        data:{
+            StorageID:18-0418-1340
+        }
+    },
+    return:{
+        affectedRows:1,
+        changedRows:1,
+        fieldCount:0,
+        insertId:0,
+        message:"(Rows matched: 1  Changed: 1  Warnings: 0",
+        protocol41:true,
+        serverStatus:34,
+        warningCount:0
+    }
+}

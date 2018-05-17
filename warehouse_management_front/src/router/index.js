@@ -5,13 +5,18 @@ import Main from '@/modules/main/Main'
 
 import Employee from '@/modules/employee/employeeManagement'
 import Supplier from '@/modules/supplier/supplierManagement'
+import Instore from '@/modules/instore/instore'
+import Outstore from '@/modules/outstore/outstore'
 import Warehourse from '@/modules/warehouse/warehouseManagement'
+import WarehouseList from '@/modules/warehouse/warehouseList'
+import WarehouseDetail from '@/modules/warehouse/warehouseDetail'
 import System from '@/modules/system/systemConfiguration'
 import Help from '@/modules/help/help'
 
-Vue.use(Router)
+Vue.use(Router);
 
 export default new Router({
+  mode: 'history',
   routes: [
     {
       path: '/',
@@ -26,7 +31,7 @@ export default new Router({
       path: '/main',
       name: '主页面',
       component: Main,
-      meta: { requireAuth: true },
+      redirect: '/warehouse',
       children: [
         {
           path: '/employee',
@@ -39,10 +44,21 @@ export default new Router({
           component: Supplier,
           meta: { requireAuth: true },
         },{
-          path: '/warehourse',
+          path: '/warehouse',
           name: '仓库管理',
           component: Warehourse,
-          meta: { requireAuth: true },
+          redirect: '/list',
+          children: [{
+            path: '/list',
+            name: '仓库列表',
+            component: WarehouseList,
+            meta: { requireAuth: true },
+          },{
+            path: '/detail',
+            name: '仓库详情',
+            component: WarehouseDetail,
+            meta: { requireAuth: true },
+          }],
         },{
           path: '/system',
           name: '系统设置',
@@ -53,7 +69,17 @@ export default new Router({
           name: '帮助',
           component: Help,
           meta: { requireAuth: true },
-        },]
+        },{
+          path: '/instore',
+          name: '入库管理',
+          component: Instore,
+          meta: { requireAuth: true },
+        },{
+          path: '/outstore',
+          name: '出库管理',
+          component: Outstore,
+          meta: { requireAuth: true },
+        }]
     }
   ]
 })

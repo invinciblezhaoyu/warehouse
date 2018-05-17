@@ -9,6 +9,9 @@ var bodyParser = require('body-parser');
 var indexRouter = require('./routes/index');
 var userRouter = require('./routes/userRouter');
 var warehouseRouter = require('./routes/warehouseRouter');
+var goodsRouter = require('./routes/goodsRouter');
+var orderRouter = require('./routes/orderRouter');
+var supplierRouter = require('./routes/supplierRouter');
 
 var app = express();
 
@@ -33,6 +36,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/', indexRouter);
 app.use('/user', userRouter);
 app.use('/storage', warehouseRouter);
+app.use('/goods', goodsRouter);
+app.use('/order', orderRouter);
+app.use('/supplier', supplierRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

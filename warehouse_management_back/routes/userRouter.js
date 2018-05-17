@@ -3,10 +3,6 @@ const router = express.Router();
 
 const userDB = require('../db/userDB');
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.send("<h1>welcome to express</h1>");
-});
 router.post('/managerLogin', function(req, res, next) {
   let { userName, password } = req.body;
   userDB.managerLogin().then((data) => {
@@ -35,6 +31,9 @@ router.post('/userLogin', function(req, res, next) {
 
 router.get('/allManager', function(req, res, next) {
   userDB.userLogin().then((data) => {
+    data.forEach(element => {
+      delete element.Managerpwd;
+    });
     res.send(data);
   }).catch((err) => {
     console.log(err);

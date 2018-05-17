@@ -64,7 +64,11 @@ export default {
       try{
         await this.managerLogin(params);
         if(!this.user.msg){
-          this.$router.push('main');
+          this.$message({
+            message: '恭喜你，登录成功',
+            type: 'success'
+          });
+          this.$router.push('/main');
         }else{
           this.$alert(this.user.msg);
         }

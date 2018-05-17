@@ -1,28 +1,23 @@
 <template>
-  <el-dialog title="新增仓库" :visible.sync="dialogVisible">
-    <!-- <div>
-      <span>仓库名称：</span><el-input class="input" v-model="newWare.name" placeholder="请输入内容" size="mini"></el-input>
-    </div> -->
+  <el-dialog :title="dialogTitle" :visible.sync="dialogVisible">
     <el-form :model="newWare">
-      <el-form-item label="仓库名称" :label-width="formLabelWidth">
+      <el-form-item label="仓库名称" :label-width="formLabelWidth" style="width:295px;">
         <el-input v-model="newWare.StorageName"></el-input>
       </el-form-item>
       <el-form-item label="管理人" :label-width="formLabelWidth">
         <el-select
           v-model="newWare.StoManID"
-          multiple
           collapse-tags
-          style="margin-left: 20px;"
           placeholder="请选择">
           <el-option
             v-for="item in userList"
             :key="item.ManagerID"
             :label="item.ManagerName"
-            :value="item.ManagerName">
+            :value="item.ManagerID">
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="地址" :label-width="formLabelWidth">
+      <el-form-item label="地址" :label-width="formLabelWidth" style="width:295px;">
         <el-input v-model="newWare.StorageAddre"></el-input>
       </el-form-item>
       <!-- <el-form-item label="描述" :label-width="formLabelWidth">
@@ -32,7 +27,7 @@
 
     <div slot="footer" class="dialog-footer">
       <el-button @click="dialogVisible = false">取 消</el-button>
-      <el-button type="primary" @click="updateStorage()">立 即 创 建</el-button>
+      <el-button type="primary" @click="storageUpdate()">{{dialogTitle}}</el-button>
     </div>
     </el-dialog>
 </template>
@@ -47,28 +42,38 @@ export default {
       dialogVisible: false,
       formLabelWidth: '80px',
       newWare: {},
+      dialogTitle: '',
     }
   },
   computed: {
     ...mapGetters(['userList']),
   },
   methods: {
-    ...mapActions(['addNewStorage']),
+    ...mapActions(['addNewStorage','updateStorage']),
     open(ware) {
       this.dialogVisible = true;
+      if(ware) ware.createTime = moment(ware.createTime).format('YYYY-MM-DD HH:mm:ss');
       this.newWare = ware || {
-        StorageName: `仓库${moment().format('YY-MMDD-HHmm')}`,
+        type: 'new',
+        StorageName: `仓库${moment().format('YYMM-DDHH-mmss')}`,
         StoManID: '',
         StorageAddre: '',
         StorageDescribe: '',
+        createTime: moment().format('YYYY-MM-DD HH:mm:ss'),
       }
+      this.dialogTitle = this.newWare.type ? '新增' : '修改';
     },
-    async updateStorage() {
-      this.newWare.StorageID = moment().format('YYMMDDHHmm');
+    async storageUpdate() {
       try{
-        let res = await this.addNewStorage([this.newWare]);
+        let res = {};
+        if(this.newWare.type) {
+          this.newWare.StorageID = moment().format('MMDDHHmmss');
+          res = await this.addNewStorage([this.newWare]);
+        }
+        else res = await this.updateStorage(this.newWare);
         if(res.status === 200){
-          this.$message({ message: `新增${this.newWare.StorageName}成功`, type: 'success' });
+          let str = this.newWare.type ? '新增' : '修改';
+          this.$message({ message: `${str + this.newWare.StorageName}成功`, type: 'success' });
         }
       }catch(err){
         this.$message.error(`操作失败，尝试刷新后重试`);
