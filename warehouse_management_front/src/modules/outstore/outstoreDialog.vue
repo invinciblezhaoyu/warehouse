@@ -4,24 +4,30 @@
       <el-col :span="2" style="line-height:40px;text-align:right;">
         <span>订单名称：</span>
       </el-col>
-      <el-col :span="9">
+      <el-col :span="5">
         <el-input v-model="order.orderName" placeholder="请输入内容"></el-input>
       </el-col>
       <el-col :span="2" style="line-height:40px;text-align:right;">
-        <span>供应商：</span>
+        <span>客户：</span>
       </el-col>
-      <el-col :span="9">
-        <el-select v-model="order.SupplierID" clearable placeholder="请选择">
+      <el-col :span="5">
+        <el-input v-model="order.ClientID" placeholder="请输入内容"></el-input>
+      </el-col>
+      <el-col :span="2" style="line-height:40px;text-align:right;">
+        <span>出库仓库：</span>
+      </el-col>
+      <el-col :span="5">
+        <el-select v-model="order.StorageID" clearable placeholder="请选择" @change="getGoodsByStorageID">
           <el-option
-            v-for="item in supplierList"
-            :key="item.SupplierID"
-            :label="item.SupplierName"
-            :value="item.SupplierID">
+            v-for="item in warehouses"
+            :key="item.StorageID"
+            :label="item.StorageName"
+            :value="item.StorageID">
             </el-option>
         </el-select>
       </el-col>
-      <el-col :span="2">
-        <el-button type="primary" plain size="mini" style="float:right;">批量导入</el-button>
+      <el-col :span="3">
+        <el-button type="primary" plain size="mini" style="float:right;margin-top:5px;">批量导入</el-button>
       </el-col>
     </el-row>
     
@@ -32,7 +38,7 @@
     </div>
     <div slot="footer" class="dialog-footer">
       <el-button @click="dialogVisible = false">取 消</el-button>
-      <el-button type="primary" @click="instore()">入 库</el-button>
+      <el-button type="primary" @click="outstore()">出 库</el-button>
     </div>
     
   </el-dialog>
@@ -43,18 +49,19 @@ import { mapGetters,mapActions } from 'vuex'
 import rowSelect from './rowSelect'
 import moment from 'moment'
 import uuidv1 from 'uuid/v1'
+import warehouseListVue from '../warehouse/warehouseList.vue';
 export default {
   data () {
     return {
       dialogVisible: false,
       formLabelWidth: '80px',
       newWare: {},
-      dialogTitle: '入库单',
+      dialogTitle: '出库单',
       order: {},
     }
   },
   computed: {
-    ...mapGetters(['supplierList']),
+    ...mapGetters(['supplierList','warehouses']),
   },
   components:{
       rowSelect,
@@ -63,27 +70,32 @@ export default {
     this.getSupplierList();
   },
   methods: {
-    ...mapActions(['getSupplierList','instoreSubmit']),
+    ...mapActions(['getSupplierList','outstoreSubmit','getGoodsTypeByWareId']),
     open() {
       this.dialogVisible = true;
       this.order = {
         orderID: '',
         orderName : `订单${moment().format('YYMMDDHHmmss')}`,
+        StorageID: '',
         SupplierID: '',
+        ClientID: '',
         InstoreDate: moment().format('YYYY-MM-DD HH:mm:ss'),
         ManagerID: sessionStorage.ManagerID,
-        sign: 1,
+        sign: 0,
         list: [{}],
       };
     },
     addNewRow() {
       this.order.list.push({});
     },
-    instore() {
+    outstore() {
       this.order.orderID = moment().format('MDDHHmmss');
-      this.order.InstoreDate = moment().format('YYYY-MM-DD HH:mm:ss')
-      this.instoreSubmit(this.order);
+      this.order.OutstoreDate = moment().format('YYYY-MM-DD HH:mm:ss');
+      this.outstoreSubmit(this.order);
       this.dialogVisible = false;
+    },
+    getGoodsByStorageID(value) {
+      this.getGoodsTypeByWareId(value);
     },
   }
 }

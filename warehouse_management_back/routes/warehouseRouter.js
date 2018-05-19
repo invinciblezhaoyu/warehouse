@@ -13,7 +13,6 @@ router.get('/allStorage', function(req, res, next) {
   });
 })
 router.get('/allStorageById', function(req, res, next) {
-  console.log(req.query.ManagerID);
   warehouseDB.getAllWareById(req.query.ManagerID,req.query.page).then(data => {
     warehouseDB.getAllWareCountById(req.query.ManagerID).then( result => {
       res.send({data,result});

@@ -1,40 +1,28 @@
 <template>
   <el-row class="row">
     <el-col :span="2" style="line-height:40px;text-align:right;">
-      <span>存放仓库：</span>
-    </el-col>
-    <el-col :span="6">
-      <el-select v-model="value.StorageID" clearable placeholder="请选择" @change="chooseWare">
-        <el-option
-          v-for="item in warehouses"
-          :key="item.StorageID"
-          :label="item.StorageName"
-          :value="item.StorageID"
-          >
-        </el-option>
-      </el-select>
-    </el-col>
-    <el-col :span="2" style="line-height:40px;text-align:right;">
       <span>物品名称：</span>
     </el-col>
     <el-col :span="6">
       <el-select v-model="value.GoodsID" clearable placeholder="请选择">
         <el-option
-          v-for="item in goodsType"
+          v-for="item in selectGoods"
           :key="item.GoodsID"
-          :label="item.GoodsName"
-          :value="item.GoodsID">
+          :label="`${item.GoodsQty === 0 ? item.GoodsName + '(库存不足)' : item.GoodsName + '(' + item.GoodsQty + ')'} `"
+          :value="item.GoodsID"
+          :disabled="item.disabled">
           </el-option>
       </el-select>
     </el-col>
-    <el-col :span="2" style="line-height:40px;text-align:right;">
+    
+    <el-col :span="3" style="line-height:40px;text-align:right;">
       <span>物品数量：</span>
     </el-col>
     <el-col :span="5">
-      <el-input v-model="value.InstorGoodsQty" placeholder="请输入内容"></el-input>
+      <el-input v-model="value.OutstorGoodsQty" placeholder="请输入内容" @blur="trunMinus"></el-input>
     </el-col>
     
-    <el-col :span="1" style="line-height:40px;text-align:center;font-size:20px;">
+    <el-col :span="1" :offset="7" style="line-height:40px;text-align:center;font-size:20px;">
       <i class="el-icon-error"></i>
     </el-col>
   </el-row>
@@ -51,7 +39,13 @@ export default {
   },
   props:['value'],
   computed: {
-    ...mapGetters(['goodsgoods','warehouses','goodsType']),
+    ...mapGetters(['warehouses','goodsType']),
+    selectGoods: function () {
+      return this.goodsType.map(item => {
+        if(item.GoodsQty === 0) item.disabled = true;
+        return item;
+      });
+    }
   },
   components: {
     
@@ -61,9 +55,8 @@ export default {
   },
   methods: {
     ...mapActions(['getGoodsTypeByWareId']),
-    chooseWare(value) {
-      
-      this.getGoodsTypeByWareId(value);
+    trunMinus() {
+      this.value.OutstorGoodsQty = -this.value.OutstorGoodsQty;
     }
   },
 }

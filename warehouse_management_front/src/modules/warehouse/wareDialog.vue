@@ -20,7 +20,7 @@
       <el-form-item label="地址" :label-width="formLabelWidth" style="width:295px;">
         <el-input v-model="newWare.StorageAddre"></el-input>
       </el-form-item>
-      <!-- <el-form-item label="描述" :label-width="formLabelWidth">
+      <!-- <el-form-item label="物品" :label-width="formLabelWidth">
         <el-input v-model="newWare.StorageDescribe" type="textarea"></el-input>
       </el-form-item> -->
     </el-form>
@@ -67,7 +67,7 @@ export default {
       try{
         let res = {};
         if(this.newWare.type) {
-          this.newWare.StorageID = moment().format('MMDDHHmmss');
+          this.newWare.StorageID = `${moment().format('MHHmmss')}`;
           res = await this.addNewStorage([this.newWare]);
         }
         else res = await this.updateStorage(this.newWare);

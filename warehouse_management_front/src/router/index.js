@@ -6,7 +6,9 @@ import Main from '@/modules/main/Main'
 import Employee from '@/modules/employee/employeeManagement'
 import Supplier from '@/modules/supplier/supplierManagement'
 import Instore from '@/modules/instore/instore'
+import OrderDetail from '@/modules/instore/orderDetail'
 import Outstore from '@/modules/outstore/outstore'
+import OutOrderDetail from '@/modules/outstore/orderDetail'
 import Warehourse from '@/modules/warehouse/warehouseManagement'
 import WarehouseList from '@/modules/warehouse/warehouseList'
 import WarehouseDetail from '@/modules/warehouse/warehouseDetail'
@@ -73,6 +75,16 @@ export default new Router({
           path: '/instore',
           name: '入库管理',
           component: Instore,
+          meta: { requireAuth: true },
+        },{
+          path: '/orderDetail',
+          name: '入库订单详情',
+          component: OrderDetail,
+          meta: { requireAuth: true },
+        },{
+          path: '/outOrderDetail',
+          name: '出库订单详情',
+          component: OutOrderDetail,
           meta: { requireAuth: true },
         },{
           path: '/outstore',

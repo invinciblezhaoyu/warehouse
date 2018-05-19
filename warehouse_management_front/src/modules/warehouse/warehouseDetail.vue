@@ -2,14 +2,22 @@
   <div>
     <el-tabs v-model="activeName" @tab-click="handleClick">
     <el-tab-pane label="仓库物品列表" name="first">
-      <el-table :data="goods" style="width: 100%" :row-class-name="tableRowClassName">
+      <el-button v-if="auth === 'admin'" type="primary" size="mini" style="float:right;" @click="updateGoods()">增加物品</el-button>
+      <el-table :data="goodsType" style="width: 100%" :row-class-name="tableRowClassName" height="450">
         <el-table-column type="index" label="序号"></el-table-column>
         <el-table-column prop="GoodsName" label="产品名称"></el-table-column>
         <el-table-column prop="GoodsType" label="产品类型"></el-table-column>
         <el-table-column prop="GoodsQty" label="产品数量"></el-table-column>
         <el-table-column prop="GoodsPrize" label="产品价格"></el-table-column>
         <el-table-column prop="GoodsStorID" label="地址"></el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button type="primary" size="mini" @click="updateGoods(scope.row)">修改</el-button>
+            <el-button v-if="auth === 'admin'" type="danger" size="mini" @click="deleteGood(scope.row)">删除</el-button>
+          </template>
+        </el-table-column>
       </el-table>
+      <add-goods-Dialog ref="goodsDialog"></add-goods-Dialog>
     </el-tab-pane>
     <el-tab-pane label="仓库统计信息" name="second">
       <div ref="bar" style="width: 700px;height:250px;float:left">1</div>
@@ -23,22 +31,28 @@
 <script>
 import { mapGetters,mapActions } from 'vuex';
 import echarts from 'echarts'
+import addGoodsDialog from './addGoodsDialog'
 export default {
   data () {
     return {
+      auth: sessionStorage.userName,
       activeName: 'first',
       tableRowClassName: ''
     }
   },
   computed: {
-    ...mapGetters(['goods']),
+    ...mapGetters(['goods','goodsType']),
+  },
+  components: {
+    addGoodsDialog,
   },
   mounted() {
-    this.createCharts();
+    
   },
   methods: {
+    ...mapActions(['deleteGoods']),
     handleClick(tab, event) {
-      console.log(tab, event);
+      this.createCharts();
     },
     createCharts() {
       const bar = echarts.init(this.$refs.bar);
@@ -68,7 +82,7 @@ export default {
             {
                 type : 'category',
                 // data : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                data : this.goods.map(item => item.GoodsName),
+                data : this.goodsType.map(item => item.GoodsName),
                 axisTick: {
                     alignWithLabel: true
                 }
@@ -84,7 +98,7 @@ export default {
                 name:'直接访问',
                 type:'bar',
                 barWidth: '60%',
-                data:this.goods.map(item => item.GoodsQty)
+                data:this.goodsType.map(item => item.GoodsQty)
             }
         ]
       };
@@ -101,7 +115,7 @@ export default {
         legend: {
             orient: 'vertical',
             left: 'left',
-            data: this.goods.map(item => item.GoodsName)
+            data: this.goodsType.map(item => item.GoodsName)
         },
         series : [
             {
@@ -109,7 +123,7 @@ export default {
                 type: 'pie',
                 radius : '55%',
                 center: ['50%', '60%'],
-                data: this.goods.map(item => {
+                data: this.goodsType.map(item => {
                   let obj = {};
                   obj.value = item.GoodsQty;
                   obj.name = item.GoodsName;
@@ -175,6 +189,12 @@ export default {
     },
     barChart() {
 
+    },
+    updateGoods(row) {
+      this.$refs.goodsDialog.open(row);
+    },
+    deleteGood(row) {
+      this.deleteGoods(row);
     },
   },
 }

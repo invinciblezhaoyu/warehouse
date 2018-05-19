@@ -3,7 +3,7 @@
     <div class="showType" style="text-align:right;">
       <el-input v-model="input" placeholder="请输入内容" size="mini" style="width:200px;float:left;margin-left:10px;"></el-input>
       <el-button type="success" size="mini" style="float:left;">搜索</el-button>
-      <el-button type="success" size="mini" @click="addWarehouse">新增</el-button>
+      <el-button type="success" size="mini" @click="addWarehouse" v-if="auth === 'admin'">新增</el-button>
       <el-radio-group v-model="showTypeRadio" size="mini">
         <el-radio-button label="thumbnail"><i class="el-icon-menu"></i></el-radio-button>
         <el-radio-button label="table"><i class="el-icon-tickets"></i></el-radio-button>
@@ -19,7 +19,7 @@
               <span>{{item.StorageName}}</span>
               <div class="bottom clearfix">
                 <time class="time">2018-02-12</time>
-                <el-button type="text" class="button" @click="deleteRow(item)">删除</el-button>
+                <el-button type="text" v-if="auth === 'admin'" class="button" @click="deleteRow(item)">删除</el-button>
                 <el-button type="text" class="button" @click="updateWarehouse(item)">修改</el-button>
               </div>
             </div>
@@ -58,7 +58,7 @@
           <el-table-column fixed="right" label="操作" width="220">
             <template slot-scope="scope">
               <el-button @click="updateWarehouse(scope.row)" type="primary" size="mini">修改</el-button>
-              <el-button @click="deleteRow(scope.row)" type="danger" size="mini">删除</el-button>
+              <el-button @click="deleteRow(scope.row)" type="danger" size="mini" v-if="auth === 'admin'">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -68,7 +68,7 @@
           background
           layout="prev, pager, next"
           :total="Math.ceil(wareCount / 8) * 8"
-           @current-change="pageChange">
+          @current-change="pageChange">
         </el-pagination>
       </div>
       <ware-dialog ref="wareDialog"></ware-dialog>
@@ -87,6 +87,7 @@ export default {
       currentDate: new Date(),
       currentRow: null,
       input:'',
+      auth: sessionStorage.userName,
     }
   },
   computed: {
@@ -105,11 +106,10 @@ export default {
   async mounted () {
     await this.getAllManager();
     await this.getWarehouses(0);
-    // await this.getAllGoods();
-    // 需要传仓库id
+    await this.getAllGoods();
   },
   methods: {
-    ...mapActions(['getWarehouses','deleteStorage','getAllManager','getAllGoods']),
+    ...mapActions(['getWarehouses','deleteStorage','getAllManager','getAllGoods','getGoodsTypeByWareId']),
     addWarehouse() {
       this.$refs.wareDialog.open();
     },
@@ -144,8 +144,8 @@ export default {
       });
     },
     getDetail(item) {
-      this.getAllGoods(item.StorageID);
-      this.$router.push('/detail');
+      this.getGoodsTypeByWareId(item.StorageID);
+      this.$router.push({path:'/detail',query:{StorageID:item.StorageID}});
     },
     async pageChange(page) {
       let begin = (page - 1) * 8;

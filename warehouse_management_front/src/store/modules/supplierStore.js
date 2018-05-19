@@ -9,7 +9,6 @@ export default {
   mutations:{
     alterSupplierList(state,data) {
       state.supplierList = data;
-      console.log(data);
     },
   },
   actions:{

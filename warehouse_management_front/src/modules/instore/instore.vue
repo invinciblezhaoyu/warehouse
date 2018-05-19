@@ -26,16 +26,18 @@
         property="createTime"
         label="创建时间">
       </el-table-column>
-      <el-table-column
-        property="SupplierID"
-        label="供应商">
+      <el-table-column label="详情" width="60">
+        <template slot-scope="scope">
+          <el-button size="mini" type="text" @click="orderDetail(scope.row)">查看</el-button>
+        </template>
       </el-table-column>
     </el-table>
     <div class="checkPage" style="position: absolute;bottom:10px;right:10px;">
       <el-pagination
         background
         layout="prev, pager, next"
-        :total="6"
+        :total="Math.ceil(orderCount / 8) * 8"
+        @current-change="pageChange"
         >
       </el-pagination>
     </div>
@@ -59,9 +61,8 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['orderList']),
+    ...mapGetters(['orderList','orderCount','supplierList']),
     orders: function (){
-      console.log(111,this.orderList);
       return this.orderList.map(item => {
         item.createTime = moment(item.createTime).format('YYYY-MM-DD HH:mm:ss');
         return item;
@@ -71,13 +72,20 @@ export default {
   components:{
     instoreDialog,
   },
-  mounted() {
-    this.getOrderList({ManagerID:sessionStorage.ManagerID,page:0});
+  async mounted() {
+    await this.getOrderList({ManagerID:sessionStorage.ManagerID,page:0,sign:1});
   },
   methods: {
-    ...mapActions(['getOrderList']),
+    ...mapActions(['getOrderList','getSupplierList']),
     addOrder(){
       this.$refs.dialog.open();
+    },
+    async pageChange(page) {
+      page = (page - 1) * 8;
+      await this.getOrderList({ManagerID:sessionStorage.ManagerID,page,sign:1});
+    },
+    orderDetail(row) {
+      this.$router.push({'path': 'orderDetail',query: {row}});
     },
   },
 }

@@ -3,26 +3,46 @@ import { read } from 'fs';
 export default {
   state:{
     goods: [],
+    goodsType: [],
+    wareId: '',
   },
   getters:{
     goods: state => state.goods,
+    goodsType: state => state.goodsType,
   },
   mutations:{
     alterGoods(state,data) {
       state.goods = data;
     },
+    alterGoodsType(state,data) {
+      state.goodsType = data.data;
+      state.wareId = data.wareId;
+    },
   },
   actions:{
-    async getAllGoods(context,id) {
-      let res = await axios.get(`/goods/allGoods?id=${id}`);
+    async getAllGoods(context) {
+      let res = await axios.get(`/goods/allGoods`);
       context.commit('alterGoods',res.data);
-      console.log(22,res.data);
     },
-    async instoreSubmit(context,order) {
-      let res = await axios.post(`/goods/instore`,order);
-      // context.dispatch('getAllGoods','2');
+    async getGoodsTypeByWareId(context,wareId) {
+      let res = await axios.get(`/goods/goodsType?wareId=${wareId}`);
+      context.commit('alterGoodsType',{data:res.data,wareId});
+    },
+    async addNewGoods(context, good) {
+      let res = await axios.post(`/goods/addNewGoods`,good);
+      context.dispatch('getGoodsTypeByWareId',context.state.wareId);
       return res;
     },
+    async updateGoods(context, good) {
+      let res = await axios.post(`/goods/updateGoods`,good);
+      context.dispatch('getGoodsTypeByWareId',context.state.wareId);
+      return res;
+    },
+    async deleteGoods(context, good) {
+      let res = await axios.delete(`/goods/deleteGoods`,{data:{StorageID:good.GoodsID}});
+      context.dispatch('getGoodsTypeByWareId',context.state.wareId);
+      return res;
+    }
   }
 }
 
