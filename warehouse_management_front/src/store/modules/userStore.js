@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { SSL_OP_MICROSOFT_BIG_SSLV3_BUFFER } from 'constants';
 export default {
   state:{
     user: {},
@@ -25,10 +24,25 @@ export default {
       let res = await axios.post(url,params);
       context.commit('alterUser',res.data);
     },
-    async getAllManager(context,params) {
+    async getAllManager(context) {
       let res = await axios.get('/user/allManager');
       context.commit('alterUserList',res.data);
     },
+    async addManager(context,params) {
+      let res = await axios.post('/user/addManager',params);
+      context.dispatch('getAllManager');
+      return res;
+    },
+    async updateManager(context,params) {
+      let res = await axios.put('/user/updateManager',params);
+      context.dispatch('getAllManager');
+      return res;
+    },
+    async deleteManager(context,ManagerID) {
+      let res = await axios.delete('/user/deleteManager',{data:{ManagerID}});
+      context.dispatch('getAllManager');
+      return res;
+    }
   }
 }
 

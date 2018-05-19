@@ -194,7 +194,7 @@ export default {
       this.$refs.goodsDialog.open(row);
     },
     deleteGood(row) {
-      this.deleteGoods(row);
+      this.deleteGoods(row.GoodsID);
     },
   },
 }

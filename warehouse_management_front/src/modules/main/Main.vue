@@ -10,7 +10,7 @@
           text-color="#fff"
           :style="navStyle"
           active-text-color="#ffd04b">
-          <div style="font-size:26px;color:white;margin:20px;">仓库管理系统</div>
+          <div style="font-size:22px;color:white;margin:20px 20px 20px 10px;"><i class="el-icon-menu"></i> 仓库管理系统</div>
           <el-menu-item index="warehouse">
             <i class="el-icon-menu"></i>
             <span slot="title">仓库管理</span>
@@ -31,10 +31,10 @@
             <i class="el-icon-goods"></i>
             <span slot="title">出库信息</span>
           </el-menu-item>
-          <el-menu-item index="system">
+          <!-- <el-menu-item index="system">
             <i class="el-icon-setting"></i>
             <span slot="title">系统设置</span>
-          </el-menu-item>
+          </el-menu-item> -->
           <el-menu-item index="help">
             <i class="el-icon-question"></i>
             <span slot="title">帮助</span>
@@ -44,7 +44,18 @@
       <el-container style="position:relative;left:-1px;">
         <el-header class="header">
           <div class="litlePart">
-            {{rightUser}}
+            <el-dropdown trigger="click" @command="loginOut">
+              <el-tooltip class="item" effect="dark" :content="rightUser" placement="right-end">
+                <el-button type="text el-dropdown-link">
+                  <i class="el-icon-service" style="padding:0;margin:0"></i>
+                </el-button>
+              </el-tooltip>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item>修改个人信息</el-dropdown-item>
+                <el-dropdown-item @click="loginOut">退出登录</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+            
           </div>
         </el-header>
         <el-main>
@@ -76,7 +87,27 @@ export default {
     
   },
   methods: {
-    
+    loginOut() {
+      console.log(0)
+      this.$confirm('此操作将注销当前用户, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        sessionStorage.removeItem('userName');
+        sessionStorage.removeItem('ManagerID');
+        this.$message({
+          type: 'success',
+          message: '注销成功!'
+        });
+        this.$router.push('login');
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消'
+        });          
+      });
+    },
   }
 }
 </script>
@@ -97,15 +128,22 @@ export default {
     padding: 0;
   }
   .litlePart{
-    width:50px;
+    width:40px;
+    height:40px;
     color:#fff;
     float:right;
     text-align:center;
-    /* padding-top: 10px; */
-    /* box-sizing: border-box; */
-    /* background:#ccc; */
-    /* border-radius:50%; */
-    /* position: relative;
-    top: -10px; */
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    border-radius: 50%;
+    background: #F56C6C;
+  }
+  .el-dropdown-link {
+    cursor: pointer;
+    color: #409EFF;
+  }
+  .el-icon-arrow-down {
+    font-size: 12px;
   }
 </style>

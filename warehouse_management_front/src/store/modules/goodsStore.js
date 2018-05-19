@@ -38,8 +38,8 @@ export default {
       context.dispatch('getGoodsTypeByWareId',context.state.wareId);
       return res;
     },
-    async deleteGoods(context, good) {
-      let res = await axios.delete(`/goods/deleteGoods`,{data:{StorageID:good.GoodsID}});
+    async deleteGoods(context, GoodsID) {
+      let res = await axios.post(`/goods/deleteGoods`,{GoodsID});
       context.dispatch('getGoodsTypeByWareId',context.state.wareId);
       return res;
     }

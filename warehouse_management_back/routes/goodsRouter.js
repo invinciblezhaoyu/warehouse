@@ -64,8 +64,9 @@ router.post('/updateGoods', function (req, res, next) {
     console.log(err);
   });
 });
-router.delete('/deleteGoods', function (req, res, next) {
-  let GoodsID = req.body.StorageID;
+router.post('/deleteGoods', function (req, res, next) {
+  let GoodsID = req.body.GoodsID;
+  console.log(GoodsID);
   goodsDB.deleteGoods(GoodsID).then( data => {
     res.send(data);
   }).catch( err => {

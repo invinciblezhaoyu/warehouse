@@ -27,7 +27,7 @@
         </el-select>
       </el-col>
       <el-col :span="3">
-        <el-button type="primary" plain size="mini" style="float:right;margin-top:5px;">批量导入</el-button>
+        <!-- <el-button type="primary" plain size="mini" style="float:right;margin-top:5px;">批量导入</el-button> -->
       </el-col>
     </el-row>
     
@@ -77,7 +77,6 @@ export default {
         orderID: '',
         orderName : `订单${moment().format('YYMMDDHHmmss')}`,
         StorageID: '',
-        SupplierID: '',
         ClientID: '',
         InstoreDate: moment().format('YYYY-MM-DD HH:mm:ss'),
         ManagerID: sessionStorage.ManagerID,
@@ -91,7 +90,17 @@ export default {
     outstore() {
       this.order.orderID = moment().format('MDDHHmmss');
       this.order.OutstoreDate = moment().format('YYYY-MM-DD HH:mm:ss');
-      this.outstoreSubmit(this.order);
+      this.outstoreSubmit(this.order).then(data => {
+        this.$message({
+          type: 'success',
+          message: '操作成功!'
+        });
+      }).catch(err => {
+        this.$message({
+          type: 'warring',
+          message: '操作失败!'
+        });
+      });
       this.dialogVisible = false;
     },
     getGoodsByStorageID(value) {

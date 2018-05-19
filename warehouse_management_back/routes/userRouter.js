@@ -40,4 +40,31 @@ router.get('/allManager', function(req, res, next) {
   });
 });
 
+router.post('/addManager', function(req, res, next) {
+  let manager = req.body;
+  userDB.addManager(manager).then((data) => {
+    res.send(data);
+  }).catch((err) => {
+    console.log(err);
+  });
+});
+
+router.put('/updateManager', function(req, res, next) {
+  let manager = req.body;
+  userDB.updateManager(manager).then((data) => {
+    res.send(data);
+  }).catch((err) => {
+    console.log(err);
+  });
+});
+
+router.delete('/deleteManager', function(req, res, next) {
+  let ManagerID = req.body.ManagerID;
+  console.log(ManagerID);
+  userDB.deleteManager(ManagerID).then((data) => {
+    res.send(data);
+  }).catch((err) => {
+    console.log(err);
+  });
+});
 module.exports = router;

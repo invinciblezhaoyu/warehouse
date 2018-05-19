@@ -10,8 +10,8 @@ module.exports = {
     return pool.execute(sql);
   },
   addOrder(order) {
-    order.SupplierID = order.ClientID;
-    let sql = `INSERT INTO warehouse_db.order VALUES (${order.orderID},'${order.InstoreDate}',${order.ManagerID},${order.SupplierID},'${order.orderName}',${order.sign})`;
+    if(!order.SupplierID) order.SupplierID = order.ClientID;
+    let sql = `INSERT INTO warehouse_db.order VALUES (${order.orderID},'${order.InstoreDate}',${order.ManagerID},'${order.SupplierID}','${order.orderName}',${order.sign})`;
     return pool.execute(sql);
   },
   getOrderById(orderID) {
